@@ -1,0 +1,6 @@
+- [ ] Save Google Maps photo to disk
+- [ ] Set up connection to Supabase
+- [ ] Save Google Maps photo to Supabase storage
+- [ ] Using URL from Supabase storage, insert new hospital row into database
+- [ ] Save first hospital in ./data
+- [ ] Update errors in `searchForPlace` function to log to console, and track affected hospitals
