@@ -6,4 +6,6 @@ await loadEnv({ export: true });
 
 const hospitals = await parseHospitalData();
 
-await searchForPlace(hospitals[0]);
+const place = await searchForPlace(hospitals[0]);
+
+console.log(place);

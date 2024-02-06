@@ -26,7 +26,7 @@ function createSlug(name: string) {
   return name.toLowerCase().replace(/\s/g, "-");
 }
 
-export async function parseHospitalData(): Hospital[] {
+export async function parseHospitalData(): Promise<Hospital[]> {
   const hospitalsCsv = await Deno.readTextFile("./data/hospitals.csv");
 
   const hospitalObjects = parse(hospitalsCsv, {
