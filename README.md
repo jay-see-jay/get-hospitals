@@ -11,5 +11,5 @@ You will also need to [install Deno](https://docs.deno.com/runtime/manual/gettin
 ## Usage
 
 ```bash
-deno run --allow-read index.ts
+deno run --allow-read --allow-env index.ts
 ```
