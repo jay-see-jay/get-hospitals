@@ -8,10 +8,12 @@ A small script to populate a database with US hospital data using information pr
 At [data.cms.gov](https://data.cms.gov/provider-data/dataset/xubh-q36u) click the link to download the full dataset, and place the .csv in the [data](./data) folder with the name `hospitals.csv`.
 
 ### Deno
-You will also need to [install Deno](https://docs.deno.com/runtime/manual/getting_started/installation) to run the script.
+Follow the instructions to [install Deno](https://docs.deno.com/runtime/manual/getting_started/installation) on your local machine.
 
 ### Environment Variables
-You will need to set an environment variable `GOOGLE_MAPS_API_KEY` to a valid Google Maps API key with the [Places API](https://developers.google.com/maps/documentation/places/web-service) enabled.
+Copy `sample.env` and rename to `.env`.
+
+Set the `GOOGLE_MAPS_API_KEY` environment variable to a valid Google Maps API key, and ensure the [Places API](https://developers.google.com/maps/documentation/places/web-service) is enabled in your Google Cloud Platform project.
 
 ## Usage
 
