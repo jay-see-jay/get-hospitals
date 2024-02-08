@@ -6,8 +6,18 @@ await loadEnv({ export: true });
 
 const hospitals = await parseHospitalData();
 
-const googleMaps = new GoogleMaps();
+using file = await Deno.open("./errors.txt", {
+  write: true,
+  truncate: true,
+});
 
-const place = await googleMaps.searchForPlace(hospitals[0]);
+const googleMaps = new GoogleMaps(file);
 
-console.log(place);
+for (const hospital of hospitals) {
+  const place = await googleMaps.searchForPlace(hospital);
+  if (place) {
+    console.log(place.name);
+  }
+}
+
+file.close();

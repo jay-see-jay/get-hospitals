@@ -6,8 +6,10 @@ export class GoogleMaps {
   private readonly searchUri: string;
   private readonly apiKey: string;
   private supabase: SupabaseClient;
+  private log: FsFile;
+  private encoder: TextEncoder;
 
-  constructor() {
+  constructor(logFile: FsFile) {
     this.searchUri =
       "https://maps.googleapis.com/maps/api/place/textsearch/json";
     const apiKey = Deno.env.get("GOOGLE_MAPS_API_KEY");
@@ -16,9 +18,16 @@ export class GoogleMaps {
     }
     this.apiKey = apiKey;
     this.supabase = new SupabaseClient();
+    this.log = logFile;
+    this.encoder = new TextEncoder();
   }
 
-  async searchForPlace(hospital: Hospital): Promise<Hospital> {
+  private async writeLog(entry: string): Promise<void> {
+    const data = this.encoder.encode(`${entry}\n`);
+    await this.log.write(data);
+  }
+
+  async searchForPlace(hospital: Hospital): Promise<Hospital | undefined> {
     const query = `${hospital.name} in ${hospital.city}, ${hospital.state}`;
 
     const response = await fetch(
@@ -26,35 +35,56 @@ export class GoogleMaps {
     );
 
     if (!response.ok) {
-      throw new Error("🛑 Unable to fetch place data");
+      await this.writeLog(
+        `${hospital.cmsId}: 🛑 Unable to fetch place data for ${hospital.name}`,
+      );
+      return undefined;
     }
 
     const { results } = await response.json();
 
     if (!results || results.length === 0) {
-      throw new Error("🛑 No places found");
+      await this.writeLog(
+        `${hospital.cmsId}: 🛑 No places found for ${hospital.name}`,
+      );
+      return undefined;
     }
 
     if (results.length > 1) {
-      throw new Error(`⚠️ Potential conflict, found ${results.length} results`);
+      await this.writeLog(
+        `${hospital.cmsId}: ⚠️ Potential conflict, found ${results.length} results for ${hospital.name}`,
+      );
+      return undefined;
     }
 
     const place = results[0] as GoogleMapsPlace;
 
     if (!!place.business_status && place.business_status !== "OPERATIONAL") {
-      throw new Error("⚠️ Place is not operational");
+      await this.writeLog(
+        `${hospital.cmsId}: ⚠️ Place is not operational - ${hospital.name}`,
+      );
+      return undefined;
     }
 
     if (!place.types || !place.types.includes("hospital")) {
-      throw new Error("⚠️ Place is not a hospital");
+      await this.writeLog(
+        `${hospital.cmsId}: ⚠️ Place is not a hospital - ${hospital.name}`,
+      );
+      return undefined;
     }
 
     if (!place.photos || place.photos.length === 0) {
-      throw new Error("⚠️ Place has no photos");
+      await this.writeLog(
+        `${hospital.cmsId}: ⚠️ Place has no photos - ${hospital.name}`,
+      );
+      return undefined;
     }
 
     if (!place.geometry) {
-      throw new Error("⚠️ Place has no geometry");
+      await this.writeLog(
+        `${hospital.cmsId}: ⚠️ Place has no geometry - ${hospital.name}`,
+      );
+      return undefined;
     }
 
     const imageUrl = await this.getPlacePhoto(

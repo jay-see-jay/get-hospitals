@@ -17,6 +17,7 @@ export class SupabaseClient {
   }
 
   async savePhoto(fileName: string, blob: Blob): Promise<string> {
+    // return `${this.baseURL}storage/v1/object/public/hospital_photos/${fileName}`;
     const { data, error } = await this.client.storage
       .from(this.bucketName)
       .upload(`hospital_photos/${fileName}`, blob, {
