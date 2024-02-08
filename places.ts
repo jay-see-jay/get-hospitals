@@ -8,7 +8,7 @@ export type GoogleMapsPlace = {
   types?: PlaceTypes[];
 };
 
-export const PlaceTypes = [
+export const placeTypes = [
   "accounting",
   "airport",
   "amusement_park",
@@ -106,6 +106,8 @@ export const PlaceTypes = [
   "veterinary_care",
   "zoo",
 ] as const;
+
+export type PlaceTypes = (typeof placeTypes)[number];
 
 export type LatLngLiteral = {
   lat: number;

@@ -1,4 +1,4 @@
-- [ ] Save Google Maps photo to disk
+- [x] Save Google Maps photo to disk
 - [ ] Set up connection to Supabase
 - [ ] Save Google Maps photo to Supabase storage
 - [ ] Using URL from Supabase storage, insert new hospital row into database

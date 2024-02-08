@@ -1,5 +1,5 @@
 import { Hospital } from "./parseCsv.ts";
-import { PlaceTypes, GoogleMapsPlace, BusinessStatus } from "./places.d.ts";
+import { GoogleMapsPlace } from "./places.ts";
 
 export async function searchForPlace(
   hospital: Hospital,
@@ -37,7 +37,7 @@ export async function searchForPlace(
     throw new Error("⚠️ Place is not operational");
   }
 
-  if (!place.types.includes("hospital")) {
+  if (!place.types || !place.types.includes("hospital")) {
     throw new Error("⚠️ Place is not a hospital");
   }
 
@@ -49,12 +49,13 @@ export async function searchForPlace(
     throw new Error("⚠️ Place has no geometry");
   }
 
-  await getPlacePhoto(place.photos[0].photo_reference);
+  await getPlacePhoto(hospital.cmsId, place.photos[0].photo_reference);
 
   return results[0] as GoogleMapsPlace;
 }
 
 async function getPlacePhoto(
+  cmsId: string,
   photo_reference: string | undefined,
 ): Promise<void> {
   if (!photo_reference) {
@@ -70,8 +71,13 @@ async function getPlacePhoto(
   }
 
   const response = await fetch(
-    `${uri}?maxWidth=${maxWidth}&key=${apiKey}&photo_reference=${photo_reference}`,
+    `${uri}?maxwidth=${maxWidth}&key=${apiKey}&photo_reference=${photo_reference}`,
   );
 
-  console.log(await response.blob());
+  const blob = await response.blob();
+  const arr = new Uint8Array(await blob.arrayBuffer());
+
+  const fileName = `./images/${cmsId}.${blob.type.split("/")[1]}`;
+
+  await Deno.writeFile(fileName, arr);
 }

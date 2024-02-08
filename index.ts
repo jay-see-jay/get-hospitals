@@ -8,4 +8,4 @@ const hospitals = await parseHospitalData();
 
 const place = await searchForPlace(hospitals[0]);
 
-console.log(place);
+// console.log(place);
