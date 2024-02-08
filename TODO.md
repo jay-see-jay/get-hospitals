@@ -3,6 +3,7 @@
     - [x] Create basic function for inserting hospital data
     - [x] Continue with uploading to [storage bucket](https://supabase.github.io/storage/#/object/post_object__bucketName___wildcard_)
 - [x] Save Google Maps photo to Supabase storage
-- [ ] Using URL from Supabase storage, insert new hospital row into database
 - [x] Save first hospital in ./data
 - [x] Update errors in `searchForPlace` function to log to console, and track affected hospitals
+- [ ] Add all US states to database
+- [ ] Using URL from Supabase storage, insert new hospital row into database

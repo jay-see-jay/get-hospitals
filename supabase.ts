@@ -30,37 +30,27 @@ export class SupabaseClient {
 
     return `${this.baseURL}storage/v1/object/public/${data.fullPath}`;
   }
-}
 
-export async function insertHospital(hospital: Hospital) {
-  const apiKey = Deno.env.get("SUPABASE_API_KEY");
-  if (!apiKey) {
-    throw new Error("No Supabase API key found");
-  }
+  async insertHospital(hospital: Hospital) {
+    const { data, error } = await this.client.from("hospitals").insert([
+      {
+        name: hospital.name,
+        city: hospital.city,
+        state: hospital.state,
+        type: hospital.type,
+        address: hospital.address,
+        location: `POINT(${hospital.location.lat} ${hospital.location.lng})`,
+        cms_id: hospital.cmsId,
+        image_url: hospital.imageUrl,
+        slug: hospital.slug,
+        google_place_id: hospital.googlePlaceId,
+        zip_code: hospital.zipCode,
+      },
+    ]);
 
-  const response = await fetch(`${supabaseBaseURL}rest/v1/hospitals`, {
-    method: "POST",
-    headers: {
-      apikey: apiKey,
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: hospital.name,
-      city: hospital.city,
-      state: hospital.state,
-      type: hospital.type,
-      address: hospital.address,
-      location: `POINT(${hospital.location?.latitude}, ${hospital.location?.longitude})`,
-      zip_code: hospital.zipCode,
-      cms_id: hospital.cmsId,
-      image_url: "TODO",
-      slug: hospital.slug,
-      google_place_id: "TODO",
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error("🛑 Unable to insert hospital");
+    if (error) {
+      console.error("🛑 Unable to insert hospital", error);
+    }
+    console.log("data", data);
   }
 }

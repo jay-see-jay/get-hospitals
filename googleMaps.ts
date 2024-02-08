@@ -1,6 +1,5 @@
 import { Hospital } from "./parseCsv.ts";
 import { GoogleMapsPlace } from "./places.ts";
-import { SupabaseClient } from "./supabase.ts";
 
 export class GoogleMaps {
   private readonly searchUri: string;
@@ -9,7 +8,7 @@ export class GoogleMaps {
   private log: FsFile;
   private encoder: TextEncoder;
 
-  constructor(logFile: FsFile) {
+  constructor(logFile: FsFile, supabase: SupabaseClient) {
     this.searchUri =
       "https://maps.googleapis.com/maps/api/place/textsearch/json";
     const apiKey = Deno.env.get("GOOGLE_MAPS_API_KEY");
@@ -17,7 +16,7 @@ export class GoogleMaps {
       throw new Error("No Google Maps API key found");
     }
     this.apiKey = apiKey;
-    this.supabase = new SupabaseClient();
+    this.supabase = supabase;
     this.log = logFile;
     this.encoder = new TextEncoder();
   }
