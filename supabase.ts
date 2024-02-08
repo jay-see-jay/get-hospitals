@@ -1,7 +1,35 @@
-import { Hospital } from "./parseCsv";
+import { Hospital } from "./parseCsv.ts";
+import { createClient } from "./deps.ts";
 
-const supabaseURL =
-  "https://lgzeurjeuizrkzmwyici.supabase.co/rest/v1/hospitals";
+export class SupabaseClient {
+  private baseURL: string;
+  private client: any;
+  private readonly bucketName = "images";
+
+  constructor() {
+    const supabaseKey = Deno.env.get("SUPABASE_API_KEY");
+    const supabaseBaseURL = Deno.env.get("SUPABASE_URL");
+    if (!supabaseKey || !supabaseBaseURL) {
+      throw new Error("No Supabase API key or URL found");
+    }
+    this.baseURL = supabaseBaseURL;
+    this.client = createClient(supabaseBaseURL, supabaseKey);
+  }
+
+  async savePhoto(fileName: string, blob: Blob): Promise<string> {
+    const { data, error } = await this.client.storage
+      .from(this.bucketName)
+      .upload(`hospital_photos/${fileName}`, blob, {
+        contentType: blob.type,
+      });
+
+    if (error) {
+      throw new Error(`🛑 Unable to upload photo: ${error.message}`);
+    }
+
+    return `${this.baseURL}storage/v1/object/public/${data.fullPath}`;
+  }
+}
 
 export async function insertHospital(hospital: Hospital) {
   const apiKey = Deno.env.get("SUPABASE_API_KEY");
@@ -9,7 +37,7 @@ export async function insertHospital(hospital: Hospital) {
     throw new Error("No Supabase API key found");
   }
 
-  const response = await fetch(supabaseURL, {
+  const response = await fetch(`${supabaseBaseURL}rest/v1/hospitals`, {
     method: "POST",
     headers: {
       apikey: apiKey,

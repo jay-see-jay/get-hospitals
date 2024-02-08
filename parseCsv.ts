@@ -1,9 +1,5 @@
 import { parse } from "./deps.ts";
-
-export type GeoLocation = {
-  latitude: number;
-  longitude: number;
-};
+import { LatLngLiteral } from "./places.ts";
 
 export type Hospital = {
   name: string;
@@ -12,10 +8,11 @@ export type Hospital = {
   address: string;
   zipCode: string;
   type: string;
-  location?: GeoLocation; // Get from Google Maps API
+  location?: LatLngLiteral;
   cmsId: string;
-  imageUrl?: string; // Get from Google Maps, upload to Supabase storage, and add here
+  imageUrl?: string;
   slug: string;
+  googlePlaceId: string;
 };
 
 function toTitleCase(str: string) {

@@ -19,8 +19,9 @@ Set the `GOOGLE_MAPS_API_KEY` environment variable to a valid Google Maps API ke
 
 ```bash
 deno run \
-    --allow-read=./ --allow-write=./ \
-    --allow-env=GOOGLE_MAPS_API_KEY,SUPABASE_API_KEY \
-    --allow-net=maps.googleapis.com,lh3.googleusercontent.com \
+    --allow-read \
+    --allow-write \
+    --allow-env \
+    --allow-net \
     index.ts
 ```
