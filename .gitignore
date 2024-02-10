@@ -4,4 +4,4 @@
 *.png
 .DS_Store
 .env
-errors.txt
+*.txt

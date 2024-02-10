@@ -25,10 +25,11 @@ export class SupabaseClient {
       });
 
     if (error) {
-      throw new Error(`🛑 Unable to upload photo: ${error.message}`);
+      console.log(`🛑 Unable to upload ${fileName}: ${error.message}`);
+      return undefined;
     }
 
-    return `${this.baseURL}storage/v1/object/public/${data.fullPath}`;
+    return `${this.baseURL}/storage/v1/object/public/${data.fullPath}`;
   }
 
   async insertHospital(hospital: Hospital) {
@@ -49,8 +50,10 @@ export class SupabaseClient {
     ]);
 
     if (error) {
-      console.error("🛑 Unable to insert hospital", error);
+      console.error(
+        `${hospital.cmsId}: 🛑 Unable to insert ${hospital.name}`,
+        error,
+      );
     }
-    console.log("data", data);
   }
 }

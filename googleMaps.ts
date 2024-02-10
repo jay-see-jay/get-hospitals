@@ -91,8 +91,11 @@ export class GoogleMaps {
       place.photos[0].photo_reference,
     );
 
+    if (imageUrl) {
+      hospital.imageUrl = imageUrl;
+    }
+
     hospital.location = place.geometry.location;
-    hospital.imageUrl = imageUrl;
     hospital.googlePlaceId = place.place_id;
 
     return hospital;
@@ -101,7 +104,7 @@ export class GoogleMaps {
   async getPlacePhoto(
     cmsId: string,
     photo_reference: string | undefined,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     if (!photo_reference) {
       return undefined;
     }
@@ -117,6 +120,11 @@ export class GoogleMaps {
     const response = await fetch(
       `${uri}?maxwidth=${maxWidth}&key=${apiKey}&photo_reference=${photo_reference}`,
     );
+
+    if (!response.ok) {
+      await this.writeLog(`${cmsId}: ⚠️ Unable to fetch photo`);
+      return undefined;
+    }
 
     const blob = await response.blob();
 

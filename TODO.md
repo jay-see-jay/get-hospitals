@@ -5,5 +5,7 @@
 - [x] Save Google Maps photo to Supabase storage
 - [x] Save first hospital in ./data
 - [x] Update errors in `searchForPlace` function to log to console, and track affected hospitals
-- [ ] Add all US states to database
-- [ ] Using URL from Supabase storage, insert new hospital row into database
+- [x] Add all US states to database
+- [x] Using URL from Supabase storage, insert new hospital row into database
+- [ ] Finish upload
+= [ ] Crop images?
